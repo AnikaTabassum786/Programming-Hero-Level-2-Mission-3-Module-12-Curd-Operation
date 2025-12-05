@@ -46,15 +46,16 @@ const initDB = async () => {
 initDB()
 
 
-
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello Anika Tabassum!')
 })
 
+
+//users CRUD
 app.post('/users', async (req: Request, res: Response) => {
-    const { name, email } = req.body;
+    const { name, email, age } = req.body;
     try {
-        const result = await pool.query(`INSERT INTO users(name,email) VALUES($1, $2) RETURNING *`,[name,email])
+        const result = await pool.query(`INSERT INTO users(name,email,age) VALUES($1, $2,$3) RETURNING *`, [name, email, age])
         console.log(result.rows[0]);
         // res.send({message: "Data Inserted"})
         res.status(201).json({
@@ -63,7 +64,52 @@ app.post('/users', async (req: Request, res: Response) => {
             data: result.rows[0]
         })
     }
-    
+
+    catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+})
+
+
+app.get('/users', async (req: Request, res: Response) => {
+    try {
+        const result = await pool.query(`SELECT * FROM users`);
+        res.status(200).json({
+            success: true,
+            message: "Data Fetched Successfully",
+            data: result.rows
+        })
+    }
+    catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+})
+
+app.get('/users/:id', async (req: Request, res: Response) => {
+    // console.log('This is id:',req.params.id)
+    try {
+        const result = await pool.query(`SELECT * FROM users WHERE id = $1`, [req.params.id])
+        //  console.log(result)
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+        else {
+            res.status(200).json({
+                success: true,
+                message: "Data Fetched Successfully",
+                data: result.rows[0]
+            })
+        }
+    }
     catch (err: any) {
         res.status(500).json({
             success: false,
