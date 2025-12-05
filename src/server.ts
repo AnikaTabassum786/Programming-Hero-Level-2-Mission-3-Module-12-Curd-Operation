@@ -52,6 +52,7 @@ app.get('/', (req: Request, res: Response) => {
 
 
 //users CRUD
+//create
 app.post('/users', async (req: Request, res: Response) => {
     const { name, email, age } = req.body;
     try {
@@ -73,7 +74,7 @@ app.post('/users', async (req: Request, res: Response) => {
     }
 })
 
-
+//get all users
 app.get('/users', async (req: Request, res: Response) => {
     try {
         const result = await pool.query(`SELECT * FROM users`);
@@ -91,6 +92,7 @@ app.get('/users', async (req: Request, res: Response) => {
     }
 })
 
+//get by id
 app.get('/users/:id', async (req: Request, res: Response) => {
     // console.log('This is id:',req.params.id)
     try {
@@ -109,6 +111,65 @@ app.get('/users/:id', async (req: Request, res: Response) => {
                 data: result.rows[0]
             })
         }
+    }
+    catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+})
+
+
+//update 
+app.put('/users/:id', async (req: Request, res: Response) => {
+    const {name,email} = req.body;
+    try {
+        const result = await pool.query(`UPDATE users SET name=$1, email=$2 WHERE id=$3 RETURNING *`, [name,email,req.params.id])
+        //  console.log(result)
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+        else {
+            res.status(200).json({
+                success: true,
+                message: "Data Updated Successfully",
+                // data: result.rows[0]
+            })
+        }
+    }
+    catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+})
+
+//DELETE
+app.delete('/users/:id', async (req: Request, res: Response) => {
+    // console.log('This is id:',req.params.id)
+    try {
+        const result = await pool.query(`DELETE  FROM users WHERE id = $1`, [req.params.id]);
+        console.log(result)
+        if (result.rows.length === 0) {
+            res.status(404).json({
+                // success: false,
+                // message: "Something wrong"
+                 success: true,
+                message: "Data Deleted Successfully",
+            })
+        }
+        // else {
+        //     res.status(200).json({
+        //         success: true,
+        //         message: "Data Deleted Successfully",
+        //         // data: result.rows[0]
+        //     })
+        // }
     }
     catch (err: any) {
         res.status(500).json({
