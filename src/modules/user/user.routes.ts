@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { pool } from "../../config/db";
+import { userController } from "./user.controller";
 
 const router = express.Router();
 
@@ -8,26 +9,7 @@ const router = express.Router();
 
 
 // for this "/users" , this is root '/'
-router.post('/', async (req: Request, res: Response) => {
-    const { name, email, age } = req.body;
-    try {
-        const result = await pool.query(`INSERT INTO users(name,email,age) VALUES($1, $2,$3) RETURNING *`, [name, email, age])
-        console.log(result.rows[0]);
-        // res.send({message: "Data Inserted"})
-        res.status(201).json({
-            success: true,
-            message: "Data Inserted Successfully",
-            data: result.rows[0]
-        })
-    }
-
-    catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-})
+router.post('/', userController.createUser)
 
 router.get('/', async (req: Request, res: Response) => {
     try {
