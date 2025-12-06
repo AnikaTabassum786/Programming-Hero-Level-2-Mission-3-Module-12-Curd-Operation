@@ -6,13 +6,12 @@ const router = express.Router();
 
 //localhost:5000/users/
 // app.use("/users", userRoutes)
-
-
 // for this "/users" , this is root '/'
 
 router.post('/', userController.createUser)
 router.get('/', userController.getUser)
 router.get('/:id', userController.getSingleUser)
 router.put('/:id', userController.updateUser)
+router.delete('/:id', userController.deleteUser)
 
 export const userRoutes = router;

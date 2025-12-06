@@ -18,45 +18,13 @@ app.get("/", logger, (req: Request, res: Response) => {
   res.send("Hello Next Level Developers!");
 });
 
-
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello Anika Tabassum!')
 })
 
 
-//users CRUD
-
 app.use('/users', userRoutes)
 
-
-//DELETE user
-app.delete('/users/:id', async (req: Request, res: Response) => {
-    // console.log('This is id:',req.params.id)
-    try {
-        const result = await pool.query(`DELETE  FROM users WHERE id = $1`, [req.params.id]);
-        console.log(result)
-        if (result.rowCount === 0) {
-            res.status(200).json({
-                success: false,
-                message: "User not found"
-
-            })
-        }
-        else {
-            res.status(200).json({
-                success: true,
-                message: "Data Deleted Successfully",
-                data: result.rows
-            })
-        }
-    }
-    catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        })
-    }
-})
 
 //create todos
 app.post('/todos', async (req: Request, res: Response) => {
