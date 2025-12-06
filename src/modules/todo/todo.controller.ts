@@ -4,7 +4,7 @@ import { todoService } from "./todo.service";
 const createTodo =  async (req: Request, res: Response) => {
     const { user_id, title } = req.body;
     try {
-        const result = await todoService.createTodo(user_id,title);
+        const result = await todoService.createTodo(req.body);
          res.status(201).json({
             success: true,
             message: "Data Inserted Successfully",
