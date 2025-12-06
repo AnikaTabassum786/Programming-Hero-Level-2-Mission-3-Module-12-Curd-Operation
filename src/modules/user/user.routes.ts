@@ -12,5 +12,7 @@ const router = express.Router();
 
 router.post('/', userController.createUser)
 router.get('/', userController.getUser)
+router.get('/:id', userController.getSingleUser)
+router.put('/:id', userController.updateUser)
 
 export const userRoutes = router;
