@@ -11,7 +11,7 @@ const router = express.Router();
 // for this "/users" , this is root '/'
 
 router.post('/', userController.createUser)
-router.get('/',logger, auth(), userController.getUser)
+router.get('/',logger, auth('admin'), userController.getUser)
 router.get('/:id', userController.getSingleUser)
 router.put('/:id', userController.updateUser)
 router.delete('/:id', userController.deleteUser)
